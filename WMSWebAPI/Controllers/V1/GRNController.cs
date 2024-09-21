@@ -1,3 +1,4 @@
+#define USE_CONNECTCODE
 #if USE_CONNECTCODE
 using ConnectCode.BarcodeFonts2D;
 #endif
