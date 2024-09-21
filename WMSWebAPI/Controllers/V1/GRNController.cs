@@ -1,4 +1,6 @@
-﻿using ConnectCode.BarcodeFonts2D;
+#if USE_CONNECTCODE
+using ConnectCode.BarcodeFonts2D;
+#endif
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -645,48 +647,52 @@ namespace WMSWebAPI.Controllers.V1
             return Responce;
         }
 
-        [HttpPost]
-        [Route(APIRoute.GRN.getBarcodePrintData)]
-        public ResponceList getBarcodePrintData(getBarcodePrintData ReqPara)
+      [HttpPost]
+[Route(APIRoute.GRN.getBarcodePrintData)]
+public ResponceList getBarcodePrintData(getBarcodePrintData ReqPara)
+{
+    ResponceList Responce = new ResponceList();
+
+    try
+    {
+        if (ReqPara != null)
         {
-            ResponceList Responce = new ResponceList();
-
-            try
+            JObject result = obj.getBarcodePrintData(ReqPara);
+            JObject QRCodeResult = new JObject();
+            JArray jrQRCode = new JArray();
+            int QRType = 0;
+            int PrefixType = 0;
+            var jResult = result["Table"];
+            
+            for (int i=0; i < jResult.Count(); i++)
             {
-                if (ReqPara != null)
-                {
-                    JObject result = obj.getBarcodePrintData(ReqPara);
-                    JObject QRCodeResult = new JObject();
-                    JArray jrQRCode = new JArray();
-                    int QRType = 0;
-                    int PrefixType = 0;
-                    var jResult = result["Table"];
-                    
-                    for (int i=0; i < jResult.Count(); i++)
-                    {
-                        var jSkuItem = jResult[i];
-                        var getBarcodeText = jSkuItem["BarcodeString"];
-                        DataMatrix dm = new DataMatrix(getBarcodeText.ToString(), QRType, PrefixType);
-                        string outputstr = dm.Encode();
-                        result["Table"][i]["QRCode"] = outputstr;
-                    }
-                    Responce = ResponceResult.SuccessResponseList(result);
-                    return Responce;
-                }
-                else
-                {
-                    Responce = ResponceResult.ErrorResponseList("No Record Found");
-                    return Responce;
-                }
+                var jSkuItem = jResult[i];
+                var getBarcodeText = jSkuItem["BarcodeString"];
+                #if USE_CONNECTCODE
+                DataMatrix dm = new DataMatrix(getBarcodeText.ToString(), QRType, PrefixType);
+                string outputstr = dm.Encode();
+                result["Table"][i]["QRCode"] = outputstr;
+                #else
+                // Placeholder for when ConnectCode is not available
+                result["Table"][i]["QRCode"] = "QR Code generation not available";
+                #endif
             }
-            catch (Exception ex)
-            {
-                Responce = ResponceResult.ErrorResponseList(ex.Message.ToString());
-                exe.ErrorLog(ex.Message.ToString(), APIRoute.GRN.viewGetPass, 0);
-
-            }
+            Responce = ResponceResult.SuccessResponseList(result);
             return Responce;
         }
+        else
+        {
+            Responce = ResponceResult.ErrorResponseList("No Record Found");
+            return Responce;
+        }
+    }
+    catch (Exception ex)
+    {
+        Responce = ResponceResult.ErrorResponseList(ex.Message.ToString());
+        exe.ErrorLog(ex.Message.ToString(), APIRoute.GRN.viewGetPass, 0);
+    }
+    return Responce;
+}
         /* GET BARCODE TO PRINT AS PER PATTERN - 04 DEC 2023 */
         /* GET BARCODE TO PRINT AS PER PATTERN - 19 DEC 2023 */
         [HttpPost]
