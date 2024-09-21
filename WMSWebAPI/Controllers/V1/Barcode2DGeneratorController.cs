@@ -1,4 +1,7 @@
-﻿using ConnectCode.BarcodeFonts2D;
+#define USE_CONNECTCODE
+#if USE_CONNECTCODE
+using ConnectCode.BarcodeFonts2D;
+#endif
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -17,6 +20,7 @@ namespace WMSWebAPI.Controllers.V1
     {
         Barcode2DGeneratorUtility obj = new Barcode2DGeneratorUtility();
         SysException exe = new SysException();
+
         [HttpPost]
         [Route(APIRoute.Barcode2DGenerator.Get2DBarcode)]
         public ResponceList Barcode2DGenerator(Barcode2DGeneratorRequest ReqPara)
@@ -26,26 +30,26 @@ namespace WMSWebAPI.Controllers.V1
             {
                 if (ReqPara != null)
                 {
+                    #if USE_CONNECTCODE
                     int QRType = 0;
                     int PrefixType = 0;
                     // QR Type
                     // 0 - For Square
                     // 1 - For Rectangle
-
                     // 0 - Prefix Type
                     // 1 - None
                     // 2 - GS1 FNC1
                     // 3 - 05 Macro
                     // 4 - 06 Macro
                     // 5 - Reader Programming 
-
                     DataMatrix dm = new DataMatrix(ReqPara.BarcodeText, QRType, PrefixType);
-                    string outputstr = "";
-                    outputstr = dm.Encode();
+                    string outputstr = dm.Encode();
+                    #else
+                    string outputstr = "QR Code generation not available";
+                    #endif
+
                     JObject result = new JObject();
                     result.Add("QRCode", outputstr);
-                    //JObject result = obj.Barcode2DGenerator(ReqPara);
-
                     Response = ResponceResult.SuccessResponseList(result);
                 }
                 else
