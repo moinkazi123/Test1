@@ -1,5 +1,4 @@
 version: 0.2
-
 phases:
   install:
     runtime-versions:
@@ -7,17 +6,22 @@ phases:
     commands:
       - echo Installing dependencies...
       - dotnet restore
-
+  pre_build:
+    commands:
+      - echo List contents of the current directory
+      - ls -la
   build:
     commands:
       - echo "Building the application..."
-      - dotnet build -c Release -o output # Alternative to publish
-
+      - dotnet build -c Release
+      - echo "Publishing the application..."
+      - dotnet publish -c Release -o ./published-app
   post_build:
     commands:
-      - echo "Publishing the application..."
-      - dotnet publish -c Release -o output # You can also keep this if needed
-
+      - echo "Build and publish completed."
+      - echo "Contents of the published-app directory:"
+      - ls -la ./published-app
 artifacts:
   files:
-    - output/**
+    - '**/*'
+  base-directory: './published-app'
