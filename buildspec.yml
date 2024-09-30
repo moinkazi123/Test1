@@ -7,8 +7,5 @@ phases:
   build:
     commands:
       - echo Build started on `date`
-      - dotnet publish -c release -o ./build_output WMSWebAPI.csproj
-artifacts:
-  files:
-    - CodeBuild-SampleCore/build_output/**/*
+      - dotnet publish -c release -o WMSWebAPI.csproj
 
