@@ -8,7 +8,7 @@ phases:
   build:
     commands:
       - echo Building the .NET application...
-      - dotnet build /WMSWebAPI/WMSWebAPI.csproj
+      - dotnet build WMSWebAPI/WMSWebAPI.csproj
   post_build:
     commands:
       - echo Build complete
