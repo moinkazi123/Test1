@@ -8,12 +8,12 @@ phases:
   build:
     commands:
       - echo Building the .NET application...
-      - dotnet build Test1/WMSWebAPI/WMSWebAPI.csproj
+      - dotnet build /WMSWebAPI/WMSWebAPI.csproj
   post_build:
     commands:
       - echo Build complete
 artifacts:
   files:
     - '**/*'
-  base-directory: 'bin/Debug/net8.0'
+  base-directory: 'bin/Release/net8.0'
 
