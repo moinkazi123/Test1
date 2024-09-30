@@ -10,8 +10,13 @@ phases:
 
   build:
     commands:
-      - echo Building the application...
-      - dotnet publish -c Release -o output
+      - echo "Building the application..."
+      - dotnet build -c Release -o output # Alternative to publish
+
+  post_build:
+    commands:
+      - echo "Publishing the application..."
+      - dotnet publish -c Release -o output # You can also keep this if needed
 
 artifacts:
   files:
