@@ -14,7 +14,7 @@ phases:
   build:
     commands:
       - echo Build started on `date`
-      - dotnet build WMSWebAPI/WMSWebAPI.csproj
+      - dotnet build -c Release WMSWebAPI/WMSWebAPI.csproj
       - echo Test started on `date`
       - dotnet test WMSWebAPI/WMSWebAPI.csproj
       
