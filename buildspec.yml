@@ -1,6 +1,10 @@
 version: 0.2
 
 phases:
+  install:
+   commands:
+    - yum update -y
+    - yum install -y dotnet-sdk-8.0
   pre_build:
     commands:
       - dotnet clean
