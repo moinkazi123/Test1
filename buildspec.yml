@@ -1,11 +1,50 @@
 version: 0.2
+
+env:
+  variables:
+    DOTNET_ROOT: /root/.dotnet
+    PATH: $PATH:/root/.dotnet
+
 phases:
+  install:
+    runtime-versions:
+      dotnet: 8.0
+    commands:
+      - echo Installing .NET 8 SDK...
+      - wget https://dot.net/v1/dotnet-install.sh
+      - chmod +x dotnet-install.sh
+      - ./dotnet-install.sh --channel 8.0
+      - dotnet --version
+
   pre_build:
     commands:
-      - echo Restore started on `date`
-      - dotnet restore WMSWebAPI.csproj
+      - echo Restoring NuGet packages...
+      - dotnet restore
+      - echo Running tests...
+      - dotnet test --no-restore
+
   build:
     commands:
       - echo Build started on `date`
-      - dotnet publish -c release -o WMSWebAPI.csproj
+      - dotnet build -c Release --no-restore
+      - echo Running any necessary database migrations...
+      # Uncomment and adjust if you have EF Core migrations
+      # - dotnet ef database update
 
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - dotnet publish -c Release -o ./publish --no-build
+      - echo Copying additional files...
+      - cp appspec.yml ./publish/
+      - cp scripts/* ./publish/
+
+artifacts:
+  files:
+    - '**/*'
+  base-directory: './publish'
+  name: myapp-$(date +%Y-%m-%d)
+
+cache:
+  paths:
+    - '/root/.nuget/**/*'
