@@ -3,18 +3,21 @@ version: 0.2
 env:
   variables:
     DOTNET_ROOT: /root/.dotnet
-    PATH: $PATH:/root/.dotnet
+    PATH: "$PATH:/root/.dotnet"
 
 phases:
   install:
     runtime-versions:
-      dotnet: 8.0
+      nodejs: 18  # We'll use this to run a script to install .NET
     commands:
       - echo Installing .NET 8 SDK...
+      - apt-get update
+      - apt-get install -y wget
       - wget https://dot.net/v1/dotnet-install.sh
       - chmod +x dotnet-install.sh
-      - ./dotnet-install.sh --channel 8.0
-      - dotnet --version
+      - ./dotnet-install.sh --channel 8.0 --install-dir $DOTNET_ROOT
+      - export PATH="$PATH:$DOTNET_ROOT"
+      - dotnet --info
 
   pre_build:
     commands:
@@ -27,17 +30,11 @@ phases:
     commands:
       - echo Build started on `date`
       - dotnet build -c Release --no-restore
-      - echo Running any necessary database migrations...
-      # Uncomment and adjust if you have EF Core migrations
-      # - dotnet ef database update
 
   post_build:
     commands:
       - echo Build completed on `date`
       - dotnet publish -c Release -o ./publish --no-build
-      - echo Copying additional files...
-      - cp appspec.yml ./publish/
-      - cp scripts/* ./publish/
 
 artifacts:
   files:
