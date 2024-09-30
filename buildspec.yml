@@ -9,20 +9,20 @@ phases:
   pre_build:
     commands:
       - echo Restore started on `date`
-      - dotnet restore WMStestAPI/WMStestAPI.csproj
+      - dotnet restore WMSWebAPI/WMSWebAPI.csproj
       
   build:
     commands:
       - echo Build started on `date`
-      - dotnet build WMStestAPI/WMStestAPI.csproj
+      - dotnet build WMSWebAPI/WMSWebAPI.csproj
       - echo Test started on `date`
-      - dotnet test WMStestAPI/WMStestAPI.csproj
+      - dotnet test WMSWebAPI/WMSWebAPI.csproj
       
   post_build:
     commands:
       - echo Publish started on `date`
       # https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/dotnet-linux-platform-bundle-app.html
-      - dotnet publish -c Release -r linux-x64 -o ./ WMStestAPI/WMStestAPI.csproj
+      - dotnet publish -c Release -r linux-x64 -o ./ WMSWebAPI/WMSWebAPI.csproj
       
 artifacts:
   files:
