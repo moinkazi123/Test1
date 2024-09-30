@@ -1,16 +1,18 @@
 version: 0.2
 
+env:
+  image: aws/codebuild/dotnet:8.0
+  
 phases:
   install:
     commands:
-      - echo Installing .NET SDK...
-      - yum install -y dotnet-sdk-8.0
+      - echo "Installing .NET 8 SDK"
   build:
     commands:
-      - echo Building the .NET project...
-      - dotnet build .
-  post_build:
-    commands:
-      - echo Build complete.
+      - dotnet publish -c Release -o output
+artifacts:
+  files:
+    - output/**/*
+  base-directory: output
 
 
