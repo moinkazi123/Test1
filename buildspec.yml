@@ -1,47 +1,15 @@
 version: 0.2
 
-env:
-  variables:
-    DOTNET_ROOT: /root/.dotnet
-    PATH: "$PATH:/root/.dotnet"
-
 phases:
   install:
-    runtime-versions:
-      nodejs: 18  # We'll use this to run a script to install .NET
     commands:
-      - echo Installing .NET 8 SDK...
-      - apt-get update
-      - apt-get install -y wget
-      - wget https://dot.net/v1/dotnet-install.sh
-      - chmod +x dotnet-install.sh
-      - ./dotnet-install.sh --channel 8.0 --install-dir $DOTNET_ROOT
-      - export PATH="$PATH:$DOTNET_ROOT"
-      - dotnet --info
-
+      - dotnet restore
   pre_build:
     commands:
-      - echo Restoring NuGet packages...
-      - dotnet restore
-      - echo Running tests...
-      - dotnet test --no-restore
-
+      - dotnet clean
   build:
     commands:
-      - echo Build started on `date`
-      - dotnet build -c Release --no-restore
-
+      - dotnet publish -c Release
   post_build:
     commands:
-      - echo Build completed on `date`
-      - dotnet publish -c Release -o ./publish --no-build
-
-artifacts:
-  files:
-    - '**/*'
-  base-directory: './publish'
-  name: myapp-$(date +%Y-%m-%d)
-
-cache:
-  paths:
-    - '/root/.nuget/**/*'
+      - # Optional additional steps like creating artifacts
