@@ -3,17 +3,21 @@ version: 0.2
 phases:
   install:
     commands:
-      - echo Installing .NET
+      - echo Installing .NET SDK...
       - yum install -y dotnet-sdk-8.0
+  pre_build:
+    commands:
+      - echo Restoring dependencies...
+      - dotnet restore Test1/WMSWebAPI/WMSWebAPI.csproj
   build:
     commands:
-      - echo Building the .NET application...
-      - dotnet build WMSWebAPI.csproj --configuration Release
+      - echo Building the .NET project...
+      - dotnet build Test1/WMSWebAPI/WMSWebAPI.csproj --configuration Release
   post_build:
     commands:
-      - echo Build complete
+      - echo Build complete.
 artifacts:
   files:
     - '**/*'
-  base-directory: 'bin/Release/net8.0'
+  base-directory: 'Test1/WMSWebAPI/bin/Release/net8.0'
 
