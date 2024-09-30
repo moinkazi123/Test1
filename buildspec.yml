@@ -7,10 +7,10 @@ phases:
     - yum install -y dotnet-sdk-8.0
   pre_build:
     commands:
-      - dotnet clean
+      - dotnet clean Test1/WMSWebAPI/WMSWebAPI.csproj
   build:
     commands:
-      - dotnet publish -c Release
+      - dotnet publish -c Release Test1/WMSWebAPI/WMSWebAPI.csproj
   post_build:
     commands:
       - # Optional additional steps like creating artifacts
