@@ -1,18 +1,14 @@
 version: 0.2
-
-env:
-  image: aws/codebuild/dotnet:8.0
-  
 phases:
-  install:
+  pre_build:
     commands:
-      - echo "Installing .NET 8 SDK"
+      - echo Restore started on `date`
+      - dotnet restore WMSWebAPI.csproj
   build:
     commands:
-      - dotnet publish -c Release -o output
+      - echo Build started on `date`
+      - dotnet publish -c release -o ./build_output WMSWebAPI.csproj
 artifacts:
   files:
-    - output/**/*
-  base-directory: output
-
+    - CodeBuild-SampleCore/build_output/**/*
 
