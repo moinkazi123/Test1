@@ -3,20 +3,16 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      dotnet: 8.0
+      dotnet: 8
     commands:
       - echo Installing dependencies...
       - dotnet restore
+
   build:
     commands:
-      - echo Build started on `date`
-      - dotnet publish -c Release -o ./output
-  post_build:
-    commands:
-      - echo Build completed on `date`
-      - echo Starting deployment...
-      - cp -r ./output/* /home/ec2-user/WMSCOREAPIMob2
+      - echo Building the application...
+      - dotnet publish -c Release -o output
 
 artifacts:
   files:
-    - /home/ec2-user/WMSCOREAPIMob2/*
+    - output/**
